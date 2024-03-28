@@ -1,0 +1,568 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic - Phantom by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+												
+								
+
+							<!-- Nav -->
+							<nav>
+								<ul>
+									<li><a href="index.html" class="logo">
+										<span class="symbol"><img src="images/home icon.png" alt="" /></span><span class="title">Home</span>
+									</a></li>
+								</ul>
+							</nav>
+
+					</div>
+				</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="generic.html">Ipsum veroeros</a></li>
+							<li><a href="generic.html">Tempus etiam</a></li>
+							<li><a href="generic.html">Consequat dolor</a></li>
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>SQL and Competition Climbing</h1>
+							<span class="image main"><img src="images/climb rect.png" alt="" /></span>
+							<p>2024 is going to be a big year in climbing. Paris 2024 is the second time climbing is part of the Olympics and there are still opportunities to qualify. Looking at last year’s results might just give insight into who can be hopeful to qualify and who might be on a podium receiving an Olympic medal.  </p>
+							<p>This project is focusing on one of three climbing disciplines: bouldering. Bouldering is about completing short and highly intense climbs. The aim is to gather the data on competition climbing, then clean and analyse it using SQL. The final insights will later be used in another Tableau portfolio piece.</p>
+							<h2>Creating a Database</h2>
+							<p>In 2023 there were six world cups and one world championship. These results are on the IFSC (International Federation of Sport Climbing) website, listed separately for each event and for men’s and women’s divisions. The first step is to save these results as .csv files then enter into BigQuery, the chosen tool for running SQL. </p>
+							<p>This could be done using ALTER TABLE and ADD COLUMN then UPDATE and SET . But those tools are limed in BigQuerry sandbox, so aliasing and creating new tables will be used as a work around. Note the WHERE clause is to remove athletes that did not compete (‘did not start’) and have little data.</p>
+<pre><code><b><span style="color: #0a05ab;">CREATE TABLE</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.championship_bern_womens`</span> <span style="color: #0a05ab;">AS</span>
+<span style="color: #0a05ab;">SELECT</span>
+*,
+<span style="color: #008000;">'Bern Championship'<span style="color: #0a05ab;"></span> AS </span>Comp</span>,
+<span style="color: #008000;">'womens'</span> <span style="color: #0a05ab;">AS</span> <span>mens_or_womens</span>
+<span style="color: #0a05ab;">FROM</span>
+<span style="color: #008000;">`my-project-123.bouldering_2023.championship_bern_womens`</span>
+<span style="color: #0a05ab;">WHERE Rank IS NOT NULL; </span></b>
+</code></pre>
+																</section>
+
+
+							<p>(Note Seoul did not have a final round due to weather conditions and the results were determined from the semi-finals. At this point a blank ‘final’ column was added to the Seoul competition so the attributes matched).</p>
+							<p>Now the tables are labelled, it is time to combine them. If the attributes and data type match, then UNION can be used: </p>
+<pre><code><b><span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.championship_bern_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.championship_bern_womens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.hachio_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.hachio_womens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.innsbruck_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.innsbruck_womens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.prague_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.prague_womens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.saltlake_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.saltlake_womens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.seoul_mens`</span>
+<span style="color: #0a05ab;">UNION ALL</span>
+<span style="color: #0a05ab;">SELECT</span>* <span style="color: #0a05ab;">FROM</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.seoul_womens`</span></b>
+</code></pre>
+
+							<h2>Cleaning</h2>
+							<p>Before analysis, the data needs cleaning. First, let’s check whether all the ‘did not starts’ where removed.</p>
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span> 
+  *
+<span style="color: #0a05ab;">FROM</span> 
+  <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all`</span>
+<span style="color: #0a05ab;">WHERE</span>
+<span>Qualification</span> = <span style="color: #008000;">'DNS'</span></b>
+</code></pre>
+
+
+							<p>Next, having forename and surname in one column will make grouping the data by athlete easier.</p>
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span> 
+  <span style="color: #0a05ab;">CONCAT</span>(NAME,' ',SURNAME) <span style="color: #0a05ab;">AS</span> Name
+<span style="color: #0a05ab;">FROM</span> 
+  <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all`</span></b>
+</code></pre>
+
+							<p>Next, we look at the qualification, semi-final, and final columns, where the scores in each round are recorded. The format for this is unusual, for example “1T 2Z 3 4” means the climber Topped one climb (If a climber completes a climb they are awarded a ‘Top’), reached the Zone (a halfway point) twice, took three attempts to reach the Top and four attempts to reach the Zones. The scoring is hierarchical, where Tops are most important, followed by zones and so on. To analyse the scores from the competition we are just going to extract the most important metric, Tops. This can be done with SUBSTRING to extract the first value (the number of Tops) and CAST is used to convert the data type from string to integer to allow numeric analysis later.</p>
+
+<pre><code><b><span style="color: #0a05ab;">CAST</span>(<span style="color: #0a05ab;">SUBSTR</span>(Qualification, 1, 1) <span style="color: #0a05ab;">AS INT64)</span> <span style="color: #0a05ab;">AS</span> Qual_Tops,</b></code></pre>
+
+							<p>Now let’s use these changes to make a new table with cleaned data ready for analysis:</p>
+
+<pre><code><b><span style="color: #0a05ab;">CREATE TABLE</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all_clean`</span> <span style="color: #0a05ab;">AS</span>
+<span style="color: #0a05ab;">SELECT</span> 
+  Rank,
+  <span style="color: #0a05ab;">CONCAT</span>(NAME, ' ', SURNAME) <span style="color: #0a05ab;">AS</span> Name,
+  Country,
+  <span style="color: #0a05ab;">CAST</span>(<span style="color: #0a05ab;">SUBSTR</span>(Qualification, 1, 1) <span style="color: #0a05ab;">AS INT64)</span> <span style="color: #0a05ab;">AS</span> Qual_Tops,
+  <span style="color: #0a05ab;">CAST</span>(<span style="color: #0a05ab;">SUBSTR</span>(Semi_final, 1, 1) <span style="color: #0a05ab;">AS INT64)</span> <span style="color: #0a05ab;">AS</span> Semi_Tops,
+  <span style="color: #0a05ab;">CAST</span>(<span style="color: #0a05ab;">SUBSTR</span>(Final, 1, 1) <span style="color: #0a05ab;">AS INT64)</span> <span style="color: #0a05ab;">AS</span> Final_Tops,
+  Comp,
+  mens_or_womens
+<span style="color: #0a05ab;">FROM</span> 
+  <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all`;</span></b>
+</code></pre>
+
+
+
+							<h2>Analysis</h2>
+							<p>Now that we finally have the clean data, we can perform some descriptive analysis and dive into last year’s result. Let’s explore four questions: 1) Which athletes had the best results? 2) Which athlete climbed best? 3) What was the hardest competition? 4) Which countries have the best results?</p>
+							<h3>Best Athlete Results</h3>
+							<p>Here, let’s look at gold medals, all medals, and number of finals reached for each athlete. This can be done by looking at the rank and grouping the results by athlete:</p>
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span>
+  Name,
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1) <span style="color: #0a05ab;">AS</span> Golds,
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1 <span style="color: #0a05ab;">OR</span> Rank=2 <span style="color: #0a05ab;">OR</span> Rank=3) <span style="color: #0a05ab;">AS</span> Medals, 
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1 <span style="color: #0a05ab;">OR</span> Rank=2 <span style="color: #0a05ab;">OR</span> Rank=3 <span style="color: #0a05ab;">OR</span> Rank=4 <span style="color: #0a05ab;">OR</span> Rank=5 <span style="color: #0a05ab;">OR</span> Rank=6) <span style="color: #0a05ab;">AS</span> Finals, 
+  mens_or_womens
+<span style="color: #0a05ab;">FROM</span>
+  <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all_clean`</span>
+<span style="color: #0a05ab;">WHERE</span>
+  Rank <= 6
+<span style="color: #0a05ab;">GROUP BY</span>
+  Name, mens_or_womens
+<span style="color: #0a05ab;">ORDER BY</span> 
+  Medals <span style="color: #0a05ab;">DESC</span></b>
+</code></pre>
+
+
+
+<div class="table-wrapper">
+	<style>
+        .alt td {
+            font-size: 14px; /* Ensures data cell font size is 14px */
+        }
+    </style>
+	<table class="alt">
+        <thead>
+			<tr>
+				<th>Name</th>
+				<th>Golds</th>
+				<th>Medals</th>
+				<th>Finals</th>
+				<th>Mens/Womens</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="mens">
+				<td>MEJDI SCHALCK</td>
+				<td>2</td>
+				<td>4</td>
+				<td>4</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>ORIANE BERTONE</td>
+				<td>1</td>
+				<td>4</td>
+				<td>4</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="womens">
+				<td>BROOKE RABOUTOU</td>
+				<td>1</td>
+				<td>4</td>
+				<td>5</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>DOHYUN LEE</td>
+				<td>1</td>
+				<td>3</td>
+				<td>4</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>JANJA GARNBRET</td>
+				<td>2</td>
+				<td>3</td>
+				<td>3</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="womens">
+				<td>NATALIA GROSSMAN</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>TOBY ROBERTS</td>
+				<td>1</td>
+				<td>2</td>
+				<td>2</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>MIHO NONAKA</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>SORATO ANRAKU</td>
+				<td>1</td>
+				<td>2</td>
+				<td>5</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="mens">
+				<td>TOMOA NARASAKI</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>Mens</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+
+							<h3>Strongest Athlete</h3>
+							<p>Looking at the results across a season shows who is consistently performing the best, but it doesn’t assess athletes who did not compete in the full season well. To get a further idea of athlete ability we can also look at the average number of tops from a competition (the most important scoring metric). Using averages will remove the issue of athletes not competing in all events. A perfect score in finals and semi-finals is 4 and in qualifications 5.</p>
+
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span>
+  Name,
+  <span style="color: #0a05ab;">ROUND</span>(<span style="color: #0a05ab;">AVG</span>(Final_Tops),1) <span style="color: #0a05ab;">AS</span> av_final_tops,
+  <span style="color: #0a05ab;">ROUND</span>(<span style="color: #0a05ab;">AVG</span>(Semi_Tops),1) <span style="color: #0a05ab;">AS</span> av_semi_tops,
+  <span style="color: #0a05ab;">ROUND</span>(<span style="color: #0a05ab;">AVG</span>(Qual_Tops),1) <span style="color: #0a05ab;">AS</span> av_qual_tops,
+  mens_or_womens
+<span style="color: #0a05ab;">FROM</span>
+  <span style="color: #008000;">`my-project-123.bouldering_2023_labled.all_clean`</span>
+<span style="color: #0a05ab;">GROUP BY</span>
+  Name, mens_or_womens
+<span style="color: #0a05ab;">ORDER BY</span> 
+  av_final_tops <span style="color: #0a05ab;">DESC</span></b>
+</code></pre>
+
+<div class="table-wrapper">
+	<style>
+        .alt td {
+            font-size: 14px; /* Applies font size adjustment only to table data */
+        }
+    </style>
+	<table class="alt">
+        <thead>
+			<tr>
+				<th>Name</th>
+				<th>AV Final Tops</th>
+				<th>AV Semi Tops</th>
+				<th>AV Qual Tops</th>
+				<th>Mens/Womens</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="mens">
+				<td>ADAM ONDRA</td>
+				<td>4.0</td>
+				<td>2.0</td>
+				<td>3.0</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>JANJA GARNBRET</td>
+				<td>3.7</td>
+				<td>3.7</td>
+				<td>4.7</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>MICKAEL MAWEM</td>
+				<td>3.0</td>
+				<td>3.0</td>
+				<td>3.0</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="mens">
+				<td>TOBY ROBERTS</td>
+				<td>3.0</td>
+				<td>2.5</td>
+				<td>4.5</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="mens">
+				<td>YANNICK FLOHÉ</td>
+				<td>3.0</td>
+				<td>2.0</td>
+				<td>3.0</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>CHAEHYUN SEO</td>
+				<td>3.0</td>
+				<td>4.0</td>
+				<td>4.0</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>SEAN BAILEY</td>
+				<td>3.0</td>
+				<td>2.0</td>
+				<td>4.0</td>
+				<td>Mens</td>
+			</tr>
+			<tr class="womens">
+				<td>NATALIA GROSSMAN</td>
+				<td>2.8</td>
+				<td>3.5</td>
+				<td>4.0</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="womens">
+				<td>ORIANE BERTONE</td>
+				<td>2.7</td>
+				<td>2.3</td>
+				<td>3.5</td>
+				<td>Womens</td>
+			</tr>
+			<tr class="mens">
+				<td>DOHYUN LEE</td>
+				<td>2.7</td>
+				<td>2.5</td>
+				<td>3.8</td>
+				<td>Mens</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+							<h3>Hardest Competittion</h3>
+							<p>We can also use the tops to see which competition was hardest by looking for which competition had the fewest tops. We’ll do this for the final and semi-final as they have a consistent number of athletes where qualification rounds vary greatly. (NOTE: Seoul did not have a final due to weather, hence the null result).</p>
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span>
+  Comp,
+  <span style="color: #0a05ab;">SUM</span>(Final_Tops) <span style="color: #0a05ab;">AS</span> Comp_Final_Tops,
+  <span style="color: #0a05ab;">SUM</span>(Semi_Tops) <span style="color: #0a05ab;">AS</span> Semi_Final_Tops
+<span style="color: #0a05ab;">FROM</span>
+  <span style="color: #008000;">`my-project-31462.bouldering_2023_labled.all_clean`</span>
+<span style="color: #0a05ab;">GROUP BY</span>
+  Comp
+<span style="color: #0a05ab;">ORDER BY</span> 
+  Comp_Final_Tops <span style="color: #0a05ab;">ASC</span></b>
+</code></pre>
+
+<div class="table-wrapper">
+    <style>
+        .alt td {
+            font-size: 14px; /* Applies font size adjustment only to table data */
+        }
+    </style>
+    <table class="alt">
+        <thead>
+            <tr>
+                <th>Comp</th>
+                <th>Final Tops</th>
+                <th>Semi Final Tops</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Seoul</td>
+                <td>null</td>
+                <td>25</td>
+            </tr>
+            <tr>
+                <td>Hachio</td>
+                <td>8</td>
+                <td>33</td>
+            </tr>
+            <tr>
+                <td>Bern Championship</td>
+                <td>23</td>
+                <td>89</td>
+            </tr>
+            <tr>
+                <td>Innsbruck</td>
+                <td>23</td>
+                <td>55</td>
+            </tr>
+            <tr>
+                <td>Prague</td>
+                <td>27</td>
+                <td>52</td>
+            </tr>
+            <tr>
+                <td>Saltlake</td>
+                <td>28</td>
+                <td>56</td>
+            </tr>
+            <tr>
+                <td>Brixen</td>
+                <td>28</td>
+                <td>57</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+							<h3>Most Successful Countries</h3>
+							<p>In Paris 2024 one athlete from each country can qualify, except France as the host, who gets two. The following query can show us which countries are hopeful or expectant for Olympic tickets.</p>
+
+<pre><code><b><span style="color: #0a05ab;">SELECT</span>
+  Country,
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1) <span style="color: #0a05ab;">AS</span> Golds,
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1 <span style="color: #0a05ab;">OR</span> Rank=2 <span style="color: #0a05ab;">OR</span> Rank=3) <span style="color: #0a05ab;">AS</span> Medals, 
+  <span style="color: #0a05ab;">COUNTIF</span>(Rank=1 <span style="color: #0a05ab;">OR</span> Rank=2 <span style="color: #0a05ab;">OR</span> Rank=3 <span style="color: #0a05ab;">OR</span> Rank=4 <span style="color: #0a05ab;">OR</span> Rank=5 <span style="color: #0a05ab;">OR</span> Rank=6) <span style="color: #0a05ab;">AS</span> Finals,
+  <span style="color: #0a05ab;">COUNT</span>(<span style="color: #0a05ab;">DISTINCT</span> Name) <span style="color: #0a05ab;">AS</span> Athlete_Count
+<span style="color: #0a05ab;">FROM</span>
+  <span style="color: #008000;">`my-project-31462.bouldering_2023_labled.all_clean`</span>
+<span style="color: #0a05ab;">GROUP BY</span>
+  Country
+<span style="color: #0a05ab;">ORDER BY</span> 
+  Medals <span style="color: #0a05ab;">DESC</span>;</b>
+</code></pre>
+
+
+<div class="table-wrapper">
+	<style>
+        .alt td {
+            font-size: 14px; /* Ensures data cell font size is 14px */
+        }
+    </style>
+	<table class="alt">
+        <thead>
+			<tr>
+				<th>Country</th>
+				<th>Gold</th>
+				<th>Medals</th>
+				<th>Finals</th>
+				<th>Number of Athletes</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>FRA</td>
+				<td>4</td>
+				<td>12</td>
+				<td>15</td>
+				<td>19</td>
+			</tr>
+			<tr>
+				<td>JPN</td>
+				<td>3</td>
+				<td>9</td>
+				<td>24</td>
+				<td>26</td>
+			</tr>
+			<tr>
+				<td>USA</td>
+				<td>3</td>
+				<td>7</td>
+				<td>12</td>
+				<td>20</td>
+			</tr>
+			<tr>
+				<td>KOR</td>
+				<td>1</td>
+				<td>5</td>
+				<td>8</td>
+				<td>19</td>
+			</tr>
+			<tr>
+				<td>SLO</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>14</td>
+			</tr>
+			<tr>
+				<td>GBR</td>
+				<td>1</td>
+				<td>2</td>
+				<td>2</td>
+				<td>16</td>
+			</tr>
+			<tr>
+				<td>BEL</td>
+				<td>0</td>
+				<td>1</td>
+				<td>4</td>
+				<td>6</td>
+			</tr>
+			<tr>
+				<td>CZE</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>10</td>
+			</tr>
+			<tr>
+				<td>GER</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>14</td>
+			</tr>
+			<tr>
+				<td>SRB</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>1</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+
+
+
+
+							<h2>Final Thoughts</h2>
+							<p>SQL’s ability to manage databases and clean and analyse data makes it an indispensable tool. While the above results can never tell us for certain who will be getting gold at Paris 2024, understanding last year’s competitions shows us who to watch. For more on this data check out the Tableau visualisation on my portfolio.</p>
+							
+
+
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
