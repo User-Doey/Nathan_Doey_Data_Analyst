@@ -56,7 +56,7 @@
 							<p>This project is focusing on one of three climbing disciplines: bouldering. Bouldering is about completing short and highly intense climbs. The aim is to gather the data on competition climbing, then clean and analyse it using SQL. The final insights will later be used in another Tableau portfolio piece.</p>
 							<h2>Creating a Database</h2>
 							<p>In 2023 there were six world cups and one world championship. These results are on the IFSC (International Federation of Sport Climbing) website, listed separately for each event and for men’s and women’s divisions. The first step is to save these results as .csv files then enter into BigQuery, the chosen tool for running SQL. </p>
-							<p>This could be done using ALTER TABLE and ADD COLUMN then UPDATE and SET . But those tools are limed in BigQuerry sandbox, so aliasing and creating new tables will be used as a work around. Note the WHERE clause is to remove athletes that did not compete (‘did not start’) and have little data.</p>
+							<p>This could be done using ALTER TABLE and ADD COLUMN then UPDATE and SET . But those tools are limited in BigQuerry sandbox, so aliasing and creating new tables will be used as a work around. Note the WHERE clause is to remove athletes that did not compete (‘did not start’) and have little data.</p>
 <pre><code><b><span style="color: #0a05ab;">CREATE TABLE</span> <span style="color: #008000;">`my-project-123.bouldering_2023_labled.championship_bern_womens`</span> <span style="color: #0a05ab;">AS</span>
 <span style="color: #0a05ab;">SELECT</span>
 *,
